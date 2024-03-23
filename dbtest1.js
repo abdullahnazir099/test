@@ -1,30 +1,53 @@
 
   function showOders() {
-    fetch('/.netlify/functions/allOrders')
-      .then(response => response.json())
-      .then(orders => {
-        const orderList = document.getElementById('orders-list');
-        orderList.innerHTML = '';
-        orders.forEach(order => {
-          const row = `
-            <tr>
-              <td>${order.id}</td>
-              <td>${order.order_id}</td>
-              <td>${order.username}</td>
-              <td>${order.product_name}</td>
-              <td>${order.quantity}</td>
-              <td>${order.order_date}</td>
-              <td>
-              <button class="btn btn-sm btn-info" onclick="openEditModal(${order.id})">Edit</button>
-              <button class="btn btn-sm btn-danger" onclick="confirmDelete(${order.id})">Delete</button>
+    // fetch('/.netlify/functions/allOrders')
+    //   .then(response => response.json())
+    //   .then(orders => {
+    //     const orderList = document.getElementById('orders-list');
+    //     orderList.innerHTML = '';
+    //     orders.forEach(order => {
+    //       const row = `
+    //         <tr>
+    //           <td>${order.id}</td>
+    //           <td>${order.order_id}</td>
+    //           <td>${order.username}</td>
+    //           <td>${order.product_name}</td>
+    //           <td>${order.quantity}</td>
+    //           <td>${order.order_date}</td>
+    //           <td>
+    //           <button class="btn btn-sm btn-info" onclick="openEditModal(${order.id})">Edit</button>
+    //           <button class="btn btn-sm btn-danger" onclick="confirmDelete(${order.id})">Delete</button>
               
-            </td>
-          </tr>
-        `;
-        orderList.innerHTML += row;
-      });
+    //         </td>
+    //       </tr>
+    //     `;
+    //     orderList.innerHTML += row;
+    //   });
+    // })
+    // .catch(error => console.error('Error:', error));
+
+
+    fetch('/.netlify/functions/getOrders')
+    .then(response => response.json())
+    .then(orders => {
+        const ordersContainer = document.getElementById('orders');
+        const orderList = orders.map(order=> `
+      
+        <li class="order-item">
+          <span class="order-id">ID:${order.order_id}</span>
+          <span class="username">Name:${order.username}</span>
+          <span class="product-name">Product name: ${order.product_name}</span>
+          <span class="quantity">Quantity: ${order.quantity}</span>
+          <span class="order_date">:Order date ${order.order_date}</span>  
+          <button class="btn btn-sm btn-info" onclick="openEditModal(${order.id})">Edit</button>
+         <button class="btn btn-sm btn-danger" onclick="confirmDelete(${order.id})">Delete</button>
+                    
+        </li>
+      `).join('');
+  ordersContainer.innerHTML = `<ul class="order-list">${orderList}</ul>`;
+       
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error fetching orders:', error));
   }
   
   // Function to add a new order
